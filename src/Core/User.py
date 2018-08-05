@@ -1,4 +1,4 @@
-from Core.Models.Types import Hand, UserEvent
+from Core.Models.Types import Hand, UserEventEnum, UserEvent
 from Core.Exceptions.UserSetupException import UserSetupException
 
 
@@ -24,5 +24,8 @@ class User:
             raise UserSetupException("Tried to set a hand with %d dice when the user"
                                      " has a hand of %d dice" % (len(hand), self._number_of_dice))
 
+    def get_hand(self):
+        return self._hand
+
     def play_a_turn(self) -> UserEvent:
-        return UserEvent.BET
+        return UserEvent(UserEventEnum.BET, (0, 0))
