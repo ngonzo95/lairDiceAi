@@ -3,10 +3,11 @@ from Core.Exceptions.UserSetupException import UserSetupException
 
 
 class User:
-    def __init__(self, starting_number_of_dice):
+    def __init__(self, starting_number_of_dice, name="unknown user"):
         self._hand: Hand = []
         self._number_of_dice = starting_number_of_dice
         self._max_number_of_dice = starting_number_of_dice
+        self.name = name
 
     def get_number_of_dice(self):
         return self._number_of_dice
