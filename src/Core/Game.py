@@ -45,6 +45,7 @@ class Game:
 
         if self.get_previous_player().get_number_of_dice() == 0:
             self._users.remove(self.get_previous_player())
+            self._current_player -= 1
 
     def setup_round(self):
         self._dice_totals = [0, 0, 0, 0, 0, 0]
@@ -72,14 +73,27 @@ class Game:
 
                 if self._current_player == len(self._users):
                     self._current_player = 0
+                last_user_event = current_user_event
 
-            last_user_event = current_user_event
+            else:
+                break
 
         self.resolve_bet(current_user_event, last_user_event)
+
+    def print_round_stats(self):
+        print(self.bet_log)
+        print(self._dice_totals)
+
+        result = "At the end of the round the dice totals for each user are: \n"
+        for user in self._users:
+            result += user.name + ": " + str(user.get_number_of_dice()) + "\n"
+
+        print(result)
 
     def play_game(self):
         while len(self._users) > 1:
             self.setup_round()
             self.play_a_round()
+            self.print_round_stats()
 
         print("The winner was user" + self._users[0].name)

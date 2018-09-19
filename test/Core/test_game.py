@@ -122,7 +122,26 @@ class TestGame(TestCase):
         self.assertFalse(user in self.game._users)
 
     def test_play_round(self):
+        counter = 1
+        for user in self.game._users:
+            user.name = "User " + str(counter)
+            counter += 1
+
         self.game.setup_round()
         self.game.play_a_round()
         print(self.game.bet_log)
         print(self.game._dice_totals)
+
+        result = "At the end of the round the dice totals for each user are: \n"
+        for user in self.game._users:
+            result += user.name + ": " + str(user.get_number_of_dice()) + "\n"
+
+        print(result)
+
+    def test_play_game(self):
+        counter = 1
+        for user in self.game._users:
+            user.name = "User " + str(counter)
+            counter += 1
+
+        self.game.play_game()
