@@ -1,6 +1,6 @@
 from Core.Models.Types import Hand, UserEventEnum, UserEvent
 from Core.Exceptions.UserSetupException import UserSetupException
-
+from Core.BetLog import BetLog
 
 class User:
     def __init__(self, starting_number_of_dice, name="unknown user"):
@@ -28,5 +28,11 @@ class User:
     def get_hand(self):
         return self._hand
 
-    def play_a_turn(self) -> UserEvent:
-        return UserEvent(UserEventEnum.BET, (0, 0))
+    def play_a_turn(self, bets_this_round: BetLog) -> UserEvent:
+
+        _, last_event = bets_this_round.get_bets()[-1]
+
+        if last_event.count < 6:
+            return UserEvent(UserEventEnum.BET, (last_event.count + 1, 2))
+        else:
+            return UserEvent(UserEventEnum.CHECK)

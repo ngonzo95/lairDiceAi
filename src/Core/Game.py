@@ -1,6 +1,7 @@
 from Core.User import User
 from Core.Utils.RandomUtils import random_hand
 from Core.Models.Types import UserEventEnum, UserEvent
+from Core.BetLog import BetLog
 
 
 class Game:
@@ -8,6 +9,8 @@ class Game:
         self._users = []
         self._current_player = 0
         self._dice_totals = [0, 0, 0, 0, 0, 0]
+        self.bet_log = BetLog()
+
         for i in range(number_of_users):
             self._users.append(User(number_of_dice))
 
@@ -45,6 +48,8 @@ class Game:
 
     def setup_round(self):
         self._dice_totals = [0, 0, 0, 0, 0, 0]
+        self.bet_log.clear_bets()
+
         for user in self._users:
             hand = random_hand(user.get_number_of_dice())
             user.set_hand(hand)
@@ -54,9 +59,12 @@ class Game:
     def play_a_round(self):
         last_user_event = UserEvent(UserEventEnum.BET, (0, 0))
         current_user_event = UserEvent(UserEventEnum.BET, (0, 0))
+        self.bet_log.add_bet("seed event", UserEvent(UserEventEnum.BET, (0, 0)))
 
-        while last_user_event == UserEventEnum.BET:
-            current_user_event = self._users[self._current_player].play_a_turn()
+        while last_user_event.event_type == UserEventEnum.BET:
+            current_user_event = self.get_current_player().play_a_turn(self.bet_log)
+            self.bet_log.add_bet(self.get_current_player().name, current_user_event)
+
             if current_user_event.event_type == UserEventEnum.BET:
                 if not self.is_valid_event(current_user_event, last_user_event):
                     current_user_event = UserEvent(UserEventEnum.BET, (1000, 1000))
@@ -64,7 +72,8 @@ class Game:
 
                 if self._current_player == len(self._users):
                     self._current_player = 0
-                last_user_event = current_user_event
+
+            last_user_event = current_user_event
 
         self.resolve_bet(current_user_event, last_user_event)
 

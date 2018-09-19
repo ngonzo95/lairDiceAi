@@ -54,17 +54,17 @@ class TestGame(TestCase):
         result = self.game.is_valid_event(UserEvent(UserEventEnum.BET, (4, 4)), UserEvent(UserEventEnum.BET, (4, 4)))
         self.assertFalse(result)
 
-    def test_validate_with_dice_nummber_greater_than_6_returns_fail(self):
+    def test_validate_with_dice_number_greater_than_6_returns_fail(self):
         result = self.game.is_valid_event(UserEvent(UserEventEnum.BET, (4, 7)), UserEvent(UserEventEnum.BET, (1, 1)))
         self.assertFalse(result)
 
-    def test_validate_with_dice_nummber_less_than_1_returns_fail(self):
+    def test_validate_with_dice_number_less_than_1_returns_fail(self):
         result = self.game.is_valid_event(UserEvent(UserEventEnum.BET, (4, 0)), UserEvent(UserEventEnum.BET, (1, 1)))
         self.assertFalse(result)
 
     def test_resolve_bet_when_user_called_and_wrong_removes_1_die_from_current_player(self):
         self.game.setup_round()
-        number_of_3s = self.game._dice_totals[4 - 1]
+        number_of_3s = self.game._dice_totals[3 - 1]
         number_of_4s = self.game._dice_totals[4 - 1]
         self.game._current_player = random.randint(0, self.num_users - 1)
 
@@ -121,6 +121,8 @@ class TestGame(TestCase):
 
         self.assertFalse(user in self.game._users)
 
-
     def test_play_round(self):
-        None
+        self.game.setup_round()
+        self.game.play_a_round()
+        print(self.game.bet_log)
+        print(self.game._dice_totals)

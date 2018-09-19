@@ -16,3 +16,12 @@ class UserEvent:
         self.bet = bet
         self.count = bet[0]
         self.die_number = bet[1]
+
+    def __str__(self):
+        if self.event_type == UserEventEnum.BET:
+            return "BET: There are " + str(self.count) + " " + str(self.die_number) + "s"
+
+        elif self.event_type == UserEventEnum.CALL:
+            return "CALL"
+        else:
+            return "CHECK"
